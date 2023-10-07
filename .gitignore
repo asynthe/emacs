@@ -1,8 +1,8 @@
-auto-save-list/
-eln-cache/
-elpa/
-emojis/
-transient/
+auto-save-list
+eln-cache
+elpa
+emojis
+transient
 org-roam.db
 persp-save
 projectile-bookmars.el

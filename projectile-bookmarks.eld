@@ -1,1 +1,1 @@
-("~/sync/notes/" "~/sync/system/")
+("~/sync/system/" "~/sync/notes/")
