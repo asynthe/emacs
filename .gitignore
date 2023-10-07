@@ -3,8 +3,9 @@ eln-cache/
 elpa/
 emojis/
 transient/
+.gitignore
 .org-id-locations
 org-roam.db
 persp-save
-projectile-bookmars.el
+projectile-bookmarks.eld
 recentf
