@@ -116,7 +116,7 @@
      (wl . wl-other-frame)))
  '(org-safe-remote-resources '("\\`https://fniessen\\.github\\.io\\(?:/\\|\\'\\)"))
  '(package-selected-packages
-   '(org-superstar ox-reveal neotree org-gtd ox-pandoc ewal-evil-cursors ewal-spacemacs-themes ewal-doom-themes ewal org-fragtog ox-latex-subfigure good-scroll smooth-scrolling centered-cursor-mode beacon evil-collection pdf-tools auto-async-byte-compile async org-auto-tangle toc-org perspective org-roam-ui calfw-cal calfw-org calfw-ical calfw org-journal hide-mode-line org-pomodoro peep-dired dired-open all-the-icons-dired writeroom-mode projectile markdown-mode lua-mode haskell-mode gcmh helpful ivy-rich rainbow-delimiters aggressive-indent aggresive-indent unicode-fonts use-package ligature emojify doom-themes doom-modeline counsel command-log-mode all-the-icons)))
+   '(json-mode evil-surround org-modern-indent doom-Iosvkem org-superstar ox-reveal neotree org-gtd ox-pandoc ewal-evil-cursors ewal-spacemacs-themes ewal-doom-themes ewal org-fragtog ox-latex-subfigure good-scroll smooth-scrolling centered-cursor-mode beacon evil-collection pdf-tools auto-async-byte-compile async org-auto-tangle toc-org perspective org-roam-ui calfw-cal calfw-org calfw-ical calfw org-journal hide-mode-line org-pomodoro peep-dired dired-open all-the-icons-dired writeroom-mode projectile markdown-mode lua-mode haskell-mode gcmh helpful ivy-rich rainbow-delimiters aggressive-indent aggresive-indent unicode-fonts use-package ligature emojify doom-themes doom-modeline counsel command-log-mode all-the-icons)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -125,7 +125,7 @@
  '(org-block ((t (:extend t :foreground "#dddddd" :inverse-video nil :underline nil :slant normal :weight normal))))
  '(org-document-title ((t (:inherit outline-3 :height 0.8))))
  '(org-level-1 ((t (:inherit outline-1 :height 1.0))))
- '(org-level-2 ((t (:inherit outline-2 :height 0.9))))
- '(org-level-3 ((t (:inherit outline-3 :height 0.8))))
- '(org-level-4 ((t (:inherit outline-4 :height 0.7))))
- '(org-level-5 ((t (:inherit outline-5 :height 0.7)))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))

@@ -1,36 +1,50 @@
-;; Silence compiler warnings as they can be pretty disruptive
 (if (boundp 'comp-deferred-compilation)
     (setq comp-deferred-compilation nil)
     (setq native-comp-deferred-compilation nil))
-;; In noninteractive sessions, prioritize non-byte-compiled source files to
-;; prevent the use of stale byte-code. Otherwise, it saves us a little IO time
-;; to skip the mtime checks on every *.elc file.
+
 (setq load-prefer-newer noninteractive)
 
 ;; Using garbage magic hack.
-(use-package gcmh
-  :config
-  (gcmh-mode 1))
+;;(use-package gcmh
+  ;;:config
+  ;;(gcmh-mode 1))
 ;; Setting garbage collection threshold
-(setq gc-cons-threshold 402653184
-      gc-cons-percentage 0.6)
+;;(setq gc-cons-threshold 402653184
+      ;;gc-cons-percentage 0.6)
 
 ;; Profile emacs startup
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (message "*** Emacs loaded in %s with %d garbage collections."
-                     (format "%.2f seconds"
-                             (float-time
-                              (time-subtract after-init-time before-init-time)))
-                     gcs-done)))
+;;(add-hook 'emacs-startup-hook
+          ;;(lambda ()
+            ;;(message "*** Emacs loaded in %s with %d garbage collections."
+                     ;(format "%.2f seconds"
+                             ;;(float-time
+                             ;;(time-subtract after-init-time before-init-time)))
+                     ;;gcs-done)))
 
-;; Silence compiler warnings as they can be pretty disruptive
 ;;(setq comp-async-report-warnings-errors nil)
 
 ;; Make gc pauses faster by decreasing the threshold.
 (setq gc-cons-threshold (* 2 1000 1000))
 
 (global-auto-revert-mode t)
+
+;; Initialize package sources
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
+
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
+
+;; Initialize use-package on non-Linux platforms
+(unless (package-installed-p 'use-package)
+   (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
 
 ;;(server-start)
 
@@ -56,7 +70,12 @@
 ;; Override pdf-tools mode
 ;;(evil-make-overriding-map pdf-view-mode-map 'normal)
 
+(use-package evil-surround
+  :config
+  (global-evil-surround-mode 1))
+
 (use-package haskell-mode)
+(use-package json-mode)
 (use-package lua-mode)
 (use-package markdown-mode)
 (use-package nix-mode
@@ -89,9 +108,6 @@
 ;; Don't do file backups (file.org~)
 (setq make-backup-files nil)
 ;; (setq backup-directory-alist '((".*" . "~/.config/emacs/backup"))) ; Backups on a specific folder
-
-;; Don't fold code blocks in org-mode
-(setq org-hide-block-startup nil)
 
 (global-tab-line-mode -1)
 ;;(setq tab-line-new-button-show nil) ;; do not show add-new button
@@ -136,8 +152,8 @@
 		eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-(set-frame-parameter nil 'alpha-background 0.40) ; For current frame
-(add-to-list 'default-frame-alist '(alpha-background .40)) ; For all new frames henceforth
+(set-frame-parameter nil 'alpha-background 0.60) ; For current frame
+(add-to-list 'default-frame-alist '(alpha-background .60)) ; For all new frames henceforth
 
 ;;(defun toggle-window-transparency ()
   ;;"Toggle transparency."
@@ -162,7 +178,6 @@
 (setq pixel-scroll-precision-large-scroll-height 40.0) ;; Scroll with mouse as smooth as touchpad
 ;; If it doesn't work, decrease by 5 until it works.
 
-;; zoom in/out like we do everywhere else.
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 ;;(global-set-key (kbd "C-0") '(lambda () (interactive) (text-scale-adjust 0))) ;; return to default
@@ -179,9 +194,11 @@
 	  :weight 'regular)
 (set-face-attribute 'variable-pitch nil
 	  :font "Iosevka Nerd Font 14"
-	  :weight 'regular) 
+	  :weight 'regular)
+
+;; org-table and org-block are inherited from this face
 (set-face-attribute 'fixed-pitch nil
-	  :font "Iosevka Nerd Font 14"
+	  :font "JetBrainsMono Nerd Font 14"
 	  :weight 'regular)
 
 ;; Org Faces
@@ -194,7 +211,7 @@
 (add-hook 'org-mode-hook #'my-org-faces)
 
 ;; Needed if using emacs client. Otherwise, your fonts will be smaller than expected.
-(add-to-list 'default-frame-alist '(font . "Iosevka 14"))
+(add-to-list 'default-frame-alist '(font . "Iosevka Nerd Font 14"))
 
 (use-package ligature
   :config
@@ -270,6 +287,240 @@
       erc-fill-static-center 20
       ;; erc-auto-query 'bury
       )
+
+;; Directory and others
+(setq org-directory "~/sync/notes/org/"
+      org-id-track-globally t
+      org-log-done 'time
+      org-startup-folded t
+      ;;org-startup-latex-with-latex-preview t ;; Org-fragtog enables it
+      org-hide-emphasis-markers t ;; Org styling, hide markup, etc.
+      org-pretty-entities t
+      org-ellipsis " … ")
+
+;; Enable the mouse
+(require 'org-mouse)
+
+;; * following links with the left mouse button
+;; * subtree expansion/collapse (org-cycle) with the left mouse button
+;; * several context menus on the right mouse button:
+;;    + general text
+;;    + headlines
+;;    + timestamps
+;;    + priorities
+;;    + links
+;;    + tags
+;; * promoting/demoting/moving subtrees with mouse-3
+;;    + if the drag starts and ends in the same line then promote/demote
+;;    + otherwise move the subtree
+
+;; To do keywords
+(setq org-todo-keywords '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "CANCELLED(c)" ))
+      org-log-done 'time
+      ;;org-log-done 'note
+      org-fancy-priorities-list '("[A]" "[B]" "[C]")
+      org-priority-faces
+      '((?A :foreground "#ff6c6b" :weight bold)
+        (?B :foreground "#98be65" :weight bold)
+        (?C :foreground "#c678dd" :weight bold)))
+      ;; just-saving this stuff
+      ;;org-enable-priority-commands t
+      ;;org-highest-priority ?A
+      ;;org-default-priority ?B
+      ;;org-lowest-priority ?D)
+
+;; Start in ...
+(add-hook 'org-mode-hook 'org-indent-mode)
+;; If using Org-capture, start with Insert mode
+(add-hook 'org-capture-mode-hook 'evil-insert-state)
+
+;; from DT
+(setq org-src-preserve-indentation nil)
+;;    org-src-tab-acts-natively t
+;;	  org-edit-src-content-indentation 0)
+
+;; Return follows Org links (Special for Org roam)
+(setq org-return-follows-link t)
+
+;; RETURN thing 
+;;(setq org-M-RET-may-split-line '((item . nil)))
+;; Make M-RET not add blank lines when doing a new org heading
+(setq org-blank-before-new-entry (quote ((heading . nil)
+					     (plain-list-item . nil))))
+
+;; Start with display images
+(setq org-startup-with-inline-images t)
+(setq org-image-actual-width nil) ;; Set width as nil, enable attrs to edit width
+
+;; Headings Size
+;(custom-set-faces
+; '(org-level-1 ((t (:inherit outline-1 :height 1.0))))
+; '(org-level-2 ((t (:inherit outline-2 :height 0.9))))
+; '(org-level-3 ((t (:inherit outline-3 :height 0.8))))
+; '(org-level-4 ((t (:inherit outline-4 :height 0.8))))
+; '(org-level-5 ((t (:inherit outline-5 :height 0.8))))
+; '(org-document-title ((t (:inherit outline-3 :height 0.8)))))
+
+(custom-set-faces
+ '(org-level-1 ((t (:inherit outline-1 :height 1.0))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
+ '(org-document-title ((t (:inherit outline-3 :height 0.8)))))
+
+;; Font size
+(set-face-attribute 'default nil :height 160)
+
+;; Set all to text size
+;;(require 'org-faces
+;;  (dolist (face '(org-document-title
+;;                 org-level-1
+;;                 org-level-2
+;;                 org-level-3))
+;;(set-face-attribute face nil :height 1.0)))
+
+(setq org-adapt-identation nil)
+
+;;(require 'color)
+;;(set-face-attribute 'org-block nil :background
+;;                    (color-darken-name
+;;                     (face-attribute 'default :background) 3))
+
+;; Language specific
+(setq org-src-block-faces '(("bash" (:background "#121212" :extend t))
+                          ("c" (:background "#121212" :extend t))
+			        ("cpp" (:background "#121212" :extend t))
+				("emacs-lisp" (:background "#121212" :extend t))
+			        ("haskell" (:background "#121212" :extend t))
+				("latex" (:background "#121212" :extend t))
+                          ("lua" (:background "#121212" :extend t))
+			        ("org" (:background "#121212" :extend t))
+                          ("python" (:background "#121212" :extend t))
+				("pwsh" (:background "#012456" :extend t))
+				("text" (:background "#121212" :extend t))
+                          ("nix" (:background "#121212" :extend t))
+			        ("shell" (:background "#121212" :extend t))))
+
+             ;;(custom-set-faces
+             ;; '(org-block-begin-line
+             ;;   ((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF" :extend t))))
+             ;; '(org-block
+             ;;   ((t (:background "EFF0F1" :extend t))))
+             ;; '(org-block-end-line
+             ;;   ((t (:overline "#A7A6AA" :foreground "#008ED1" :background"EAEAFF" :extend t))))
+             ;; )
+
+(setq org-hide-block-startup nil)
+
+(use-package org-tempo
+  :ensure nil) ;; tell use-package not to try to install org-tempo since it's already there.
+
+(setq org-src-fontify-natively t
+      org-src-tab-acts-natively t
+      org-confirm-babel-evaluate nil
+      org-edit-src-content-indentation 0)
+
+(use-package org-roam
+  :init
+  (setq org-roam-v2-ack t)
+  :config
+  (org-roam-db-autosync-mode)
+  (require 'org-roam-protocol) ;; If using org-roam-protocol
+  :custom
+  (org-roam-directory "~/sync/notes")
+  ;;(org-roam-dailies-directory  "personal/daily") ;; From org-roam-directory
+  (org-roam-completion-everywhere t)
+  (org-roam-capture-templates
+             '(("d" "default" plain
+		    "%?"
+		    :if-new (file+head "%<%Y%m%d>-${slug}.org" "#+title: ${title}\n")
+		    :unnarrowed t)
+	       
+             ("a" "app" plain
+             (file "~/sync/notes/.org/templates/app.org")
+             :if-new
+             (file+head "not_ready/app/%<%Y%m%d>-${slug}.org" "#+title: ${title}\n")
+             :unnarrowed t)
+
+            ("b" "book" plain
+             (file "~/sync/notes/.org/templates/booknote.org")
+             :if-new
+             (file+head "personal/book/%<%Y>-${slug}.org" "#+title: ${title}\n")
+             :unnarrowed t)
+   
+            ("n" "note" plain
+             (file "~/sync/notes/.org/templates/note.org")
+             :if-new
+             (file+head "personal/notes/%<%Y%m%d>-${slug}.org" "#+title: ${title}\n")
+             :unnarrowed t))))
+
+;;("p" "project" plain "* Goals\n\n%?\n\n* ;;Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
+             ;;:if-new
+             ;;(file+head "irl/project/%<%Y%m%d>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+             ;;:unnarrowed t)
+
+            ;;("w" "work" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
+             ;;:if-new
+             ;;(file+head "irl/work/%<%Y%m%d>-${slug}.org" "#+title: ;;${title}\n#+filetags: Project")
+             ;;:unnarrowed t))))
+
+;; :config
+;;(setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+;; If you're using a vertical completion framework, you might want a more informative completion interface 
+
+;; Configuration of the roam buffer as a side-window
+(add-to-list 'display-buffer-alist
+	           '("\\*org-roam\\*"
+		      (display-buffer-in-direction)
+		      (direction . right)
+		      (window-width . 0.33)
+		      (window-height . fit-window-to-buffer)))
+
+;; Navigation in roam buffer
+;;(define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
+(define-key org-roam-mode-map [mouse-1] #'org-roam-preview-visit)
+
+(use-package org-roam-ui
+  :config
+  (setq org-roam-ui-sync-theme t
+	      org-roam-ui-follow t
+	      org-roam-ui-update-on-save t
+	      org-roam-ui-open-on-start t))
+
+;;(setq org-roam-graph-viewer nil) ;; use view-file by default
+;;(setq org-roam-graph-viewer #'eww-open-file) ;; open the graph in eww.
+
+(use-package org-journal
+         :config
+        (setq org-journal-dir "~/sync/notes/personal/journal"
+              org-journal-file-format "%Y-%m-%d.org"
+              org-journal-date-prefix "#+title: "
+              org-journal-date-format "%a, %d-%m-%Y"
+              org-journal-time-prefix "* "))
+
+(use-package org-pomodoro)
+
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
+
+(use-package org-fragtog)
+(add-hook 'org-mode-hook 'org-fragtog-mode)
+
+(use-package org-auto-tangle
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode))
+
+(use-package toc-org
+  :commands toc-org-enable
+  :init (add-hook 'org-mode-hook 'toc-org-enable))
+
+(use-package org-superstar)
+(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+
+(use-package ox-reveal)
+
+(use-package ox-man
+  :ensure nil)
 
 (nvmap :states '(normal) :keymaps 'override :prefix "SPC"
 
@@ -377,37 +628,6 @@
       "b p" '(previous-buffer :which-key "Previous buffer"))
 
 (nvmap :states '(normal) :keymaps 'override :prefix "SPC"
-
-    ;; Open - Apps
-    "o t"   '(term :which-key "Open terminal")
-    "e h"   '(counsel-esh-history :which-key "Eshell history")
-    "e s"   '(eshell :which-key "Eshell")
-  
-
-    ;; Log Buffer
-    "l o" '((lambda () (interactive) (clm/toggle-command-log-buffer) (global-command-log-mode)) :which-key "Start command log mode")
-    ;; Start log buffer
-    "l s" '(global-command-log-mode :which-key "Turn on command log mode")
-    "l b" '(clm/toggle-command-log-buffer :which-key "Open the command log buffer")
-    
-    ;; Modes
-    "m w" '(writeroom-mode :which-key "Writeroom mode"))
-
-(nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
-       "f f"   '(find-file :which-key "Find file")
-       "f r"   '(rename-current-buffer-file :which-key "Rename current buffer filename")
-       ;;"f r"   '(counsel-recentf :which-key "Recent files")
-       ;; put recent files in SPC + /
-       "f s"   '(save-buffer :which-key "Save file")
-       "f u"   '(sudo-edit-find-file :which-key "Sudo find file")
-       "f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path")
-       "f C"   '(copy-file :which-key "Copy file")
-       "f D"   '(delete-file :which-key "Delete file")
-       "f R"   '(rename-file :which-key "Rename file")
-       "f S"   '(write-file :which-key "Save file as...")
-       "f U"   '(sudo-edit :which-key "Sudo edit file"))
-
-(nvmap :states '(normal) :keymaps 'override :prefix "SPC"
        "p i" '(pdf-view-midnight-minor-mode :which-key "Invert PDF colors"))
 
 (nvmap :states '(normal) :keymaps 'override :prefix "SPC"
@@ -473,295 +693,56 @@
 
 (nvmap :states '(normal) :keymaps 'override :prefix "SPC"
 
+    ;; Open - Apps
+    "o t"   '(term :which-key "Open terminal")
+    "e h"   '(counsel-esh-history :which-key "Eshell history")
+    "e s"   '(eshell :which-key "Eshell")
+  
+
+    ;; Log Buffer
+    "l o" '((lambda () (interactive) (clm/toggle-command-log-buffer) (global-command-log-mode)) :which-key "Start command log mode")
+    ;; Start log buffer
+    "l s" '(global-command-log-mode :which-key "Turn on command log mode")
+    "l b" '(clm/toggle-command-log-buffer :which-key "Open the command log buffer")
+    
+    ;; Modes
+    "m w" '(writeroom-mode :which-key "Writeroom mode"))
+
+(nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
+       "f f"   '(find-file :which-key "Find file")
+       "f r"   '(rename-current-buffer-file :which-key "Rename current buffer filename")
+       ;;"f r"   '(counsel-recentf :which-key "Recent files")
+       ;; put recent files in SPC + /
+       "f s"   '(save-buffer :which-key "Save file")
+       "f u"   '(sudo-edit-find-file :which-key "Sudo find file")
+       "f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path")
+       "f C"   '(copy-file :which-key "Copy file")
+       "f D"   '(delete-file :which-key "Delete file")
+       "f R"   '(rename-file :which-key "Rename file")
+       "f S"   '(write-file :which-key "Save file as...")
+       "f U"   '(sudo-edit :which-key "Sudo edit file"))
+
+(nvmap :states '(normal) :keymaps 'override :prefix "SPC"
+
   ;;"c c" '(compile :which-key "Compile")
   ;;"c C" '(recompile :which-key "Recompile")
   ;;"c p" '(check-parens :which-key "Check parenthesis")   
   ;;"c b" '(beacon-blink :which-key "Blink cursor"))
   
   ;; Config files
+  "l" '((lambda () (interactive (find-file "~/sync/notes/.writing/log.org"))) :which-key "Open log file")
   "c e" '((lambda () (interactive (find-file "~/.config/emacs/config.org"))) :which-key "Emacs configuration")
   "h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :which-key "Reload emacs config")
 
   ;; Configuration files 
   "c d" '((lambda () (interactive (find-file "~/sync/system/README.org"))) :which-key "Dots configuration")
-  "c f" '((lambda () (interactive (find-file "~/flake/README.org"))) :which-key "Nix flake configuration")
+  "c f" '((lambda () (interactive (find-file "~/flake/flake.org"))) :which-key "Nix flake configuration")
   "c h" '((lambda () (interactive (find-file "~/.config/hypr/README.org"))) :which-key "Hyprland configuration")
   "c t" '((lambda () (interactive (find-file "~/.config/tmux/README.org"))) :which-key "tmux configuration")
   "c l" '((lambda () (interactive (find-file "~/.config/lf/README.org"))) :which-key "lf configuration")
   "c v" '((lambda () (interactive (find-file "~/.config/nvim/README.org"))) :which-key "Neovim configuration")
   "c x" '((lambda () (interactive (find-file "~/.config/xmonad/README.org"))) :which-key "Xmonad configuration")
   "c z" '((lambda () (interactive (find-file "~/.config/zsh/README.org"))) :which-key "Zsh configuration"))
-
-;; Directory and others
-(setq org-directory "~/sync/notes/org/"
-      org-id-track-globally t
-      org-log-done 'time
-      org-startup-folded t
-      ;;org-startup-latex-with-latex-preview t ;; Org-fragtog enables it
-      ;; Org styling, hide markup etc.
-      org-hide-emphasis-markers t
-      org-pretty-entities t
-      org-ellipsis " … ")
-
-;; Enable the mouse
-(require 'org-mouse)
-
-;; * following links with the left mouse button
-;; * subtree expansion/collapse (org-cycle) with the left mouse button
-;; * several context menus on the right mouse button:
-;;    + general text
-;;    + headlines
-;;    + timestamps
-;;    + priorities
-;;    + links
-;;    + tags
-;; * promoting/demoting/moving subtrees with mouse-3
-;;    + if the drag starts and ends in the same line then promote/demote
-;;    + otherwise move the subtree
-
-;; To do keywords
-(setq org-todo-keywords '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "CANCELLED(c)" ))
-      org-log-done 'time
-      ;;org-log-done 'note
-      org-fancy-priorities-list '("[A]" "[B]" "[C]")
-      org-priority-faces
-      '((?A :foreground "#ff6c6b" :weight bold)
-        (?B :foreground "#98be65" :weight bold)
-        (?C :foreground "#c678dd" :weight bold)))
-      ;; just-saving this stuff
-      ;;org-enable-priority-commands t
-      ;;org-highest-priority ?A
-      ;;org-default-priority ?B
-      ;;org-lowest-priority ?D)
-
-;; Start in ...
-(add-hook 'org-mode-hook 'org-indent-mode)
-;; If using Org-capture, start with Insert mode
-(add-hook 'org-capture-mode-hook 'evil-insert-state)
-
-;; from DT
-(setq org-src-preserve-indentation nil)
-;;    org-src-tab-acts-natively t
-;;	  org-edit-src-content-indentation 0)
-
-;; Return follows Org links (Special for Org roam)
-(setq org-return-follows-link t)
-
-;; RETURN thing 
-;;(setq org-M-RET-may-split-line '((item . nil)))
-;; Make M-RET not add blank lines when doing a new org heading
-(setq org-blank-before-new-entry (quote ((heading . nil)
-					     (plain-list-item . nil))))
-
-;; Start with display images
-(setq org-startup-with-inline-images t)
-(setq org-image-actual-width nil) ;; Set width as nil, enable attrs to edit width
-
-;; Headings Size
-(custom-set-faces
- '(org-level-1 ((t (:inherit outline-1 :height 1.0))))
- '(org-level-2 ((t (:inherit outline-2 :height 0.9))))
- '(org-level-3 ((t (:inherit outline-3 :height 0.8))))
- '(org-level-4 ((t (:inherit outline-4 :height 0.7))))
- '(org-level-5 ((t (:inherit outline-5 :height 0.7))))
- '(org-document-title ((t (:inherit outline-3 :height 0.8)))))
-
-;; Font size
-(set-face-attribute 'default nil :height 160)
-
-;; Set all to text size
-;;(require 'org-faces
-;;  (dolist (face '(org-document-title
-;;                 org-level-1
-;;                 org-level-2
-;;                 org-level-3))
-;;(set-face-attribute face nil :height 1.0)))
-
-(use-package org-roam
-  :init
-  (setq org-roam-v2-ack t)
-  :config
-  (org-roam-db-autosync-mode)
-  (require 'org-roam-protocol) ;; If using org-roam-protocol
-  :custom
-  (org-roam-directory "~/sync/notes")
-  ;;(org-roam-dailies-directory  "personal/daily") ;; From org-roam-directory
-  (org-roam-completion-everywhere t)
-  (org-roam-capture-templates
-   
-             '(("a" "app" plain
-             (file "~/sync/notes/personal/templates/app.org")
-             :if-new
-             (file+head "not_ready/app/%<%Y%m%d>-${slug}.org" "#+title: ${title}\n")
-             :unnarrowed t)
-
-	       
-            ("e" "blog" plain
-             (file "~/sync/notes/personal/templates/blog.org")
-             :if-new
-             (file+head "not_ready/blog/%<%Y%m%d>-${slug}.org" "#+title: ${title}\n")
-             :unnarrowed t)
-
-
-            ("g" "guide" plain
-             (file "~/sync/notes/personal/templates/guide.org")
-             :if-new
-             (file+head "not_ready/guide/%<%Y%m%d>-${slug}.org" "#+title: ${title}\n")
-             :unnarrowed t)
-
-
-            ("s" "study" plain
-             (file "~/sync/notes/personal/templates/study.org")
-             :if-new
-             (file+head "not_ready/study/%<%Y%m%d>-${slug}.org" "#+title: ${title}\n")
-             :unnarrowed t)
-
-	        ;; PERSONAL
-
-            ("b" "book" plain
-             (file "~/sync/notes/personal/templates/booknote.org")
-             :if-new
-             (file+head "personal/book/%<%Y>-${slug}.org" "#+title: ${title}\n")
-             :unnarrowed t)
-
-	    
-            ("n" "note" plain
-             (file "~/sync/notes/personal/templates/note.org")
-             :if-new
-             (file+head "personal/notes/%<%Y%m%d>-${slug}.org" "#+title: ${title}\n")
-             :unnarrowed t)
-
-	    
-            ("m" "media" plain
-             (file "~/sync/notes/personal/media.org")
-            :if-new
-            (file+head "personal/media/%<%Y%m%d>-${slug}.org" "#+title: ${title}\n")
-            :unnarrowed t))))
-
-
-            ;;("p" "project" plain "* Goals\n\n%?\n\n* ;;Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
-             ;;:if-new
-             ;;(file+head "irl/project/%<%Y%m%d>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
-             ;;:unnarrowed t)
-
-            ;;("w" "work" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
-             ;;:if-new
-             ;;(file+head "irl/work/%<%Y%m%d>-${slug}.org" "#+title: ;;${title}\n#+filetags: Project")
-             ;;:unnarrowed t))))
-
-;; :config
-;;(setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-;; If you're using a vertical completion framework, you might want a more informative completion interface 
-
-;; Configuration of the roam buffer as a side-window
-(add-to-list 'display-buffer-alist
-	           '("\\*org-roam\\*"
-		      (display-buffer-in-direction)
-		      (direction . right)
-		      (window-width . 0.33)
-		      (window-height . fit-window-to-buffer)))
-
-;; Navigation in roam buffer
-;;(define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
-(define-key org-roam-mode-map [mouse-1] #'org-roam-preview-visit)
-
-(use-package org-roam-ui
-  :config
-  (setq org-roam-ui-sync-theme t
-	      org-roam-ui-follow t
-	      org-roam-ui-update-on-save t
-	      org-roam-ui-open-on-start t))
-
-;;(setq org-roam-graph-viewer nil) ;; use view-file by default
-;;(setq org-roam-graph-viewer #'eww-open-file) ;; open the graph in eww.
-
-(use-package org-journal
-         :config
-        (setq org-journal-dir "~/sync/notes/personal/journal"
-              org-journal-file-format "%Y-%m-%d.org"
-              org-journal-date-prefix "#+title: "
-              org-journal-date-format "%a, %d-%m-%Y"
-              org-journal-time-prefix "* "))
-
-(use-package org-pomodoro)
-
-(use-package org-auto-tangle
-  :defer t
-  :hook (org-mode . org-auto-tangle-mode))
-
-;; SOURCE BLOCK CODE BACKGROUND
-
-;;(require 'color)
-;;(set-face-attribute 'org-block nil :background
-;;                    (color-darken-name
-;;                     (face-attribute 'default :background) 3))
-
-;; Language specific
-(setq org-src-block-faces '(("bash" (:background "#121212" :extend t))
-				("config" (:background "#121212" :extend t))
-				("emacs-lisp" (:background "#121212" :extend t))
-                            ("python" (:background "#121212" :extend t))
-                            ("nix" (:background "#121212" :extend t))
-                            ("c" (:background "#121212" :extend t))
-			        ("cpp" (:background "#121212" :extend t))
-			        ("org" (:background "#121212" :extend t))
-                            ("lua" (:background "#121212" :extend t))
-			        ("haskell" (:background "#121212" :extend t))
-				("config" (:background "121212" :extend t))
-			        ("shell" (:background "#121212" :extend t))))
-
-
-             ;;(custom-set-faces
-             ;; '(org-block-begin-line
-             ;;   ((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF" :extend t))))
-             ;; '(org-block
-             ;;   ((t (:background "EFF0F1" :extend t))))
-             ;; '(org-block-end-line
-             ;;   ((t (:overline "#A7A6AA" :foreground "#008ED1" :background"EAEAFF" :extend t))))
-             ;; )
-
-(use-package org-tempo
-  :ensure nil) ;; tell use-package not to try to install org-tempo since it's already there.
-
-(setq org-src-fontify-natively t
-      org-src-tab-acts-natively t
-      org-confirm-babel-evaluate nil
-      org-edit-src-content-indentation 0)
-
-(use-package ox-man
-:ensure nil)
-
-(use-package toc-org
-  :commands toc-org-enable
-  :init (add-hook 'org-mode-hook 'toc-org-enable))
-
-(setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
-
-(use-package org-fragtog)
-(add-hook 'org-mode-hook 'org-fragtog-mode)
-
-(use-package org-superstar)
-(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
-
-(use-package ox-reveal)
-
-;; Initialize package sources
-(require 'package)
-
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
-
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
-
-;; Initialize use-package on non-Linux platforms
-(unless (package-installed-p 'use-package)
-   (package-install 'use-package))
-
-(require 'use-package)
-(setq use-package-always-ensure t)
 
 (use-package perspective
   :bind
@@ -877,7 +858,7 @@
         which-key-separator " → " ))
 
 (use-package valign)
-(add-hook 'org-mode-hook #'valign-mode)
+;;(add-hook 'org-mode-hook #'valign-mode)
 
 (use-package projectile
   :config
@@ -916,7 +897,7 @@
 
 ;; hide the modeline with hide-mode-line-mode
 (use-package hide-mode-line)
-;;(global-hide-mode-line-mode 1)
+(global-hide-mode-line-mode 1)
 ;; some hooks for stuff in which we don't want use modeline in
 ;;(add-hook 'completion-list-mode-hook #'hide-mode-line-mode)
 (add-hook 'neotree-mode-hook #'hide-mode-line-mode)
@@ -938,19 +919,6 @@
 ;; TEST
 ;; (setq projectile-switch-project-action 'neotree-projectile-action)
 
-;;(use-package calfw-cal)
-;;(use-package calfw-org)
-
-;;(defun my-open-calendar ()
-  ;;(interactive)
-  ;;(cfw:open-calendar-buffer
-   ;;:contents-sources
-   ;;(list
-    ;;(cfw:org-create-file-source "Org" "~/sync/notes/org/irl/events.org" "Orange") ; org mode
-    ;;(cfw:org-create-file-source "Agenda" "~/sync/notes/org"
-    ;;(cfw:org-create-file-source "Events" "~/sync/notes/org"
-    ;;)))
-
 (use-package pdf-tools
   ;;:pin manual
   :config
@@ -969,11 +937,22 @@
         (set (make-local-variable 'evil-normal-state-cursor) (list nil))
         (internal-show-cursor nil nil)))
 
+;;(use-package calfw-cal)
+;;(use-package calfw-org)
+
+;;(defun my-open-calendar ()
+  ;;(interactive)
+  ;;(cfw:open-calendar-buffer
+   ;;:contents-sources
+   ;;(list
+    ;;(cfw:org-create-file-source "Org" "~/sync/notes/org/irl/events.org" "Orange") ; org mode
+    ;;(cfw:org-create-file-source "Agenda" "~/sync/notes/org"
+    ;;(cfw:org-create-file-source "Events" "~/sync/notes/org"
+    ;;)))
+
 (use-package writeroom-mode)
 
 (use-package pass)
-
-
 
 (use-package simple-httpd)
 
@@ -996,6 +975,11 @@
       (advice-remove 'y-or-n-p #'my/return-t)
       res))
   (advice-add 'org-roam-capture--finalize :around #'my/disable-yornp)
+
+(setq find-file-visit-truename t)
+;(setq vc-follow-symlinks t) ; What does this do?
+
+(find-file "~/notes/temp.org")
 
 ;; Make all backups be in the same directory.
 ;;(setq backup-directory-alist '(("." . "~/.saves")))
