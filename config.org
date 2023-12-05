@@ -556,7 +556,7 @@ Use (= / =) -> delete the spaces,
 
 #+begin_src emacs-lisp
 ;; Directory and others
-(setq org-directory "~/sync/notes/org/"
+(setq org-directory "~/sync"
       org-id-track-globally t
       org-log-done 'time
       org-startup-folded t
@@ -754,7 +754,7 @@ Remember to check for EmacSQL SQLite binary with *org-roam--sqlite-available-p*
   (org-roam-db-autosync-mode)
   (require 'org-roam-protocol) ;; If using org-roam-protocol
   :custom
-  (org-roam-directory "~/sync/notes")
+  (org-roam-directory "~/sync")
   ;;(org-roam-dailies-directory  "personal/daily") ;; From org-roam-directory
   (org-roam-completion-everywhere t)
   (org-roam-capture-templates

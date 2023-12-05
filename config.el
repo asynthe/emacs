@@ -289,7 +289,7 @@
       )
 
 ;; Directory and others
-(setq org-directory "~/sync/notes/org/"
+(setq org-directory "~/sync/notes"
       org-id-track-globally t
       org-log-done 'time
       org-startup-folded t
