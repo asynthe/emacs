@@ -152,8 +152,8 @@
 		eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-(set-frame-parameter nil 'alpha-background 0.60) ; For current frame
-(add-to-list 'default-frame-alist '(alpha-background .60)) ; For all new frames henceforth
+(set-frame-parameter nil 'alpha-background 0.75) ; For current frame
+(add-to-list 'default-frame-alist '(alpha-background .75)) ; For all new frames henceforth
 
 ;;(defun toggle-window-transparency ()
   ;;"Toggle transparency."
@@ -289,7 +289,7 @@
       )
 
 ;; Directory and others
-(setq org-directory "~/sync/notes"
+(setq org-directory "~/sync"
       org-id-track-globally t
       org-log-done 'time
       org-startup-folded t
@@ -428,7 +428,7 @@
   (org-roam-db-autosync-mode)
   (require 'org-roam-protocol) ;; If using org-roam-protocol
   :custom
-  (org-roam-directory "~/sync/notes")
+  (org-roam-directory "~/sync")
   ;;(org-roam-dailies-directory  "personal/daily") ;; From org-roam-directory
   (org-roam-completion-everywhere t)
   (org-roam-capture-templates
@@ -919,24 +919,6 @@
 ;; TEST
 ;; (setq projectile-switch-project-action 'neotree-projectile-action)
 
-(use-package pdf-tools
-  ;;:pin manual
-  :config
-  (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-width))
-  ;;(define-key pdf-view-mode-map (kbd "C-s") ;;'isearch-forward)
-  ;;:custom
-  ;;(pdf-annot-activate-created-annotations t ;;"automatically annotate highlights"))
-
-;; Start in midnight-mode, inverted colors
-(add-hook 'pdf-tools-enabled-hook 'pdf-view-midnight-minor-mode)
-
-;; Hide cursor, so file doesn't blink
-(add-hook 'pdf-view-mode-hook
-          (lambda ()
-        (set (make-local-variable 'evil-normal-state-cursor) (list nil))
-        (internal-show-cursor nil nil)))
-
 ;;(use-package calfw-cal)
 ;;(use-package calfw-org)
 
@@ -979,7 +961,7 @@
 (setq find-file-visit-truename t)
 ;(setq vc-follow-symlinks t) ; What does this do?
 
-(find-file "~/notes/temp.org")
+(find-file "~/sync/notes/temp.org")
 
 ;; Make all backups be in the same directory.
 ;;(setq backup-directory-alist '(("." . "~/.saves")))

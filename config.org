@@ -44,13 +44,14 @@ Welcome to my custom Emacs configuration!
 - [[#packages-1][Packages]]
   - [[#system-1][System]]
   - [[#ui-1][UI]]
-  - [[#tools][Tools]]
 - [[#extra][Extra]]
   - [[#blog---simple-httpd][Blog - simple-httpd]]
   - [[#ui---render-modeline-just-in-active-window][UI - Render Modeline just in active window]]
   - [[#disable-yesno-when-cancelling-note-on-org-capture][Disable Yes/No when Cancelling Note on Org Capture]]
   - [[#disable-follow-git-controlled-symbolic-link][Disable follow Git-controlled symbolic link]]
   - [[#open-a-file-instead-of-scratch-buffer][Open a file instead of /Scratch/ buffer]]
+- [[#disabled][Disabled]]
+  - [[#pdf-tools-1][pdf-tools]]
 - [[#delete--add-in-future][Delete / Add in Future]]
   - [[#backups][Backups]]
   - [[#eaf-emacs-application-framework][EAF (Emacs Application Framework)]]
@@ -336,8 +337,8 @@ Disable line numbering in /Org/ or /Markdown/.
 _note_: Works on X windows with a compositor like [[id:a2042b5e-f0a2-4213-a8c8-2fd9cd9636d8][picom]], but in Wayland case, you will need pure GTK emacs.
 
 #+begin_src emacs-lisp
-(set-frame-parameter nil 'alpha-background 0.60) ; For current frame
-(add-to-list 'default-frame-alist '(alpha-background .60)) ; For all new frames henceforth
+(set-frame-parameter nil 'alpha-background 0.75) ; For current frame
+(add-to-list 'default-frame-alist '(alpha-background .75)) ; For all new frames henceforth
 
 ;;(defun toggle-window-transparency ()
   ;;"Toggle transparency."
@@ -1663,36 +1664,6 @@ The bar where you see on the bottom of the window.
 ;; (setq projectile-switch-project-action 'neotree-projectile-action)
 #+end_src
 
-** Tools
-*** pdf-tools
-
-+ [[https://github.com/vedang/pdf-tools][github page]]
-+ [[https://pdftools.wiki][pdftools wiki]]
-+ [[https://github.com/noctuid/evil-guide#example-integration-with-pdf-tools][Evil guide, Example: Integration with Pdf Tools - github page]]
-
-Emacs support library for PDF files.
-After the install, run ~M-x pdf-tools-install RET~
-
-#+begin_src emacs-lisp
-(use-package pdf-tools
-  ;;:pin manual
-  :config
-  (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-width))
-  ;;(define-key pdf-view-mode-map (kbd "C-s") ;;'isearch-forward)
-  ;;:custom
-  ;;(pdf-annot-activate-created-annotations t ;;"automatically annotate highlights"))
-
-;; Start in midnight-mode, inverted colors
-(add-hook 'pdf-tools-enabled-hook 'pdf-view-midnight-minor-mode)
-
-;; Hide cursor, so file doesn't blink
-(add-hook 'pdf-view-mode-hook
-          (lambda ()
-        (set (make-local-variable 'evil-normal-state-cursor) (list nil))
-        (internal-show-cursor nil nil)))
-#+end_src
-
 *** calfw
 
 #+begin_src emacs-lisp
@@ -1782,8 +1753,38 @@ When opening a file that is a symbolic link, don't ask whether I want to follow 
 + [[https://superuser.com/questions/400457/how-to-automatically-open-a-file-when-emacs-start][How to automatically open a file when Emacs start? - StackExchange]]
 
 #+begin_src emacs-lisp
-(find-file "~/notes/temp.org")
+(find-file "~/sync/notes/temp.org")
 #+end_src
+
+* Disabled
+** pdf-tools
+
++ [[https://github.com/vedang/pdf-tools][github page]]
++ [[https://pdftools.wiki][pdftools wiki]]
++ [[https://github.com/noctuid/evil-guide#example-integration-with-pdf-tools][Evil guide, Example: Integration with Pdf Tools - github page]]
+
+Emacs support library for PDF files.
+After the install, run ~M-x pdf-tools-install RET~
+
+;;#+begin_src emacs-lisp
+(use-package pdf-tools
+  ;;:pin manual
+  :config
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-width))
+  ;;(define-key pdf-view-mode-map (kbd "C-s") ;;'isearch-forward)
+  ;;:custom
+  ;;(pdf-annot-activate-created-annotations t ;;"automatically annotate highlights"))
+
+;; Start in midnight-mode, inverted colors
+(add-hook 'pdf-tools-enabled-hook 'pdf-view-midnight-minor-mode)
+
+;; Hide cursor, so file doesn't blink
+(add-hook 'pdf-view-mode-hook
+          (lambda ()
+        (set (make-local-variable 'evil-normal-state-cursor) (list nil))
+        (internal-show-cursor nil nil)))
+;;#+end_src
 
 * Delete / Add in Future
 ** Backups
