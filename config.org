@@ -545,6 +545,8 @@ Maximize buffer to take the entire window.
 * Org
 ** Configuration
 
++ [[https://stackoverflow.com/questions/64665754/is-there-a-way-to-hide-all-but-the-last-header-asterisk-in-emacs-org-mode][Is there a way to hide all but the last header asterisk in emacs org-mode? - StackOverflow]]
+
 If you want to mark a work of sentence with bold, you can do it with
 C-c C-x C-f * -> Mark as bold
 C-c C-x C-f / -> Mark as /italic/
@@ -561,8 +563,9 @@ Use (= / =) -> delete the spaces,
       org-id-track-globally t
       org-log-done 'time
       org-startup-folded t
-      ;;org-startup-latex-with-latex-preview t ;; Org-fragtog enables it
+      ;;org-startup-latex-with-latex-preview t ;; Org-fragtog enables it.
       org-hide-emphasis-markers t ;; Org styling, hide markup, etc.
+      org-hide-leading-stars t ;; Hide org header leading stars.
       org-pretty-entities t
       org-ellipsis " … ")
 

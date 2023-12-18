@@ -293,8 +293,9 @@
       org-id-track-globally t
       org-log-done 'time
       org-startup-folded t
-      ;;org-startup-latex-with-latex-preview t ;; Org-fragtog enables it
+      ;;org-startup-latex-with-latex-preview t ;; Org-fragtog enables it.
       org-hide-emphasis-markers t ;; Org styling, hide markup, etc.
+      org-hide-leading-stars t ;; Hide org header leading stars.
       org-pretty-entities t
       org-ellipsis " … ")
 
