@@ -44,12 +44,14 @@ Welcome to my custom Emacs configuration!
 - [[#packages-1][Packages]]
   - [[#system-1][System]]
   - [[#ui-1][UI]]
-- [[#extra][Extra]]
-  - [[#blog---simple-httpd][Blog - simple-httpd]]
+- [[#extra---configuration][Extra - Configuration]]
+  - [[#open-a-file-instead-of-scratch-buffer][Open a file instead of /Scratch/ buffer]]
   - [[#ui---render-modeline-just-in-active-window][UI - Render Modeline just in active window]]
   - [[#disable-yesno-when-cancelling-note-on-org-capture][Disable Yes/No when Cancelling Note on Org Capture]]
   - [[#disable-follow-git-controlled-symbolic-link][Disable follow Git-controlled symbolic link]]
-  - [[#open-a-file-instead-of-scratch-buffer][Open a file instead of /Scratch/ buffer]]
+  - [[#fold-block-without-going-to-block-header][Fold block without going to block header]]
+- [[#extra---packages][Extra - Packages]]
+  - [[#blog---simple-httpd][Blog - simple-httpd]]
 - [[#disabled][Disabled]]
   - [[#pdf-tools-1][pdf-tools]]
 - [[#delete--add-in-future][Delete / Add in Future]]
@@ -1701,13 +1703,13 @@ _note_: Emacs implementation of [[id:4f81a52e-4000-4b93-9abc-e30d7920759c][pass]
 (use-package pass)
 #+end_src
 
-* Extra
-** Blog - simple-httpd
+* Extra - Configuration
+** Open a file instead of /Scratch/ buffer
 
-This will enable us to create a local web server, accesible with *http://localhost:8080*, we can also access the other files on the *content/* folder like this: *http://localhost:8080/<filename>.html*
++ [[https://superuser.com/questions/400457/how-to-automatically-open-a-file-when-emacs-start][How to automatically open a file when Emacs start? - StackExchange]]
 
 #+begin_src emacs-lisp
-(use-package simple-httpd)
+(find-file "~/sync/notes/temp.org")
 #+end_src
 
 ** UI - Render Modeline just in active window
@@ -1726,18 +1728,19 @@ This is more of a workaround, as we are just setting up the _inactive_ buffers m
 
 ** Disable Yes/No when Cancelling Note on Org Capture
 
+Function to disable "yes or no" confirmation when cancelling an org-capture note.
+
 #+begin_src emacs-lisp
-;; Function to disable "yes or no" confirmation when cancelling an org-capture note.
-  (defun my/return-t (orig-fun &rest args)
+(defun my/return-t (orig-fun &rest args)
     t)
-  (defun my/disable-yornp (orig-fun &rest args)
-    (advice-add 'yes-or-no-p :around #'my/return-t)
-    (advice-add 'y-or-n-p :around #'my/return-t)
-    (let ((res (apply orig-fun args)))
-      (advice-remove 'yes-or-no-p #'my/return-t)
-      (advice-remove 'y-or-n-p #'my/return-t)
-      res))
-  (advice-add 'org-roam-capture--finalize :around #'my/disable-yornp)
+(defun my/disable-yornp (orig-fun &rest args)
+  (advice-add 'yes-or-no-p :around #'my/return-t)
+  (advice-add 'y-or-n-p :around #'my/return-t)
+  (let ((res (apply orig-fun args)))
+    (advice-remove 'yes-or-no-p #'my/return-t)
+    (advice-remove 'y-or-n-p #'my/return-t)
+    res))
+(advice-add 'org-roam-capture--finalize :around #'my/disable-yornp)
 #+end_src
 
 ** Disable follow Git-controlled symbolic link
@@ -1751,12 +1754,26 @@ When opening a file that is a symbolic link, don't ask whether I want to follow 
 ;(setq vc-follow-symlinks t) ; What does this do?
 #+end_src
 
-** Open a file instead of /Scratch/ buffer
+** Fold block without going to block header
 
-+ [[https://superuser.com/questions/400457/how-to-automatically-open-a-file-when-emacs-start][How to automatically open a file when Emacs start? - StackExchange]]
++ [[https://stackoverflow.com/questions/8607656/emacs-org-mode-how-to-fold-block-without-going-to-block-header][Emacs Org-Mode: how to fold block without going to block header? - StackOverflow]]
+
+(defun zin/org-cycle-current-headline ()
+  (interactive)
+  (org-cycle-internal-local))
+
+(defun zin/org-cycle-current-headline ()
+  (interactive)
+  (outline-previous-heading)
+  (org-cycle))
+
+* Extra - Packages
+** Blog - simple-httpd
+
+This will enable us to create a local web server, accesible with *http://localhost:8080*, we can also access the other files on the *content/* folder like this: *http://localhost:8080/<filename>.html*
 
 #+begin_src emacs-lisp
-(find-file "~/sync/notes/temp.org")
+(use-package simple-httpd)
 #+end_src
 
 * Disabled

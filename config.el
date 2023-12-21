@@ -937,7 +937,7 @@
 
 (use-package pass)
 
-(use-package simple-httpd)
+(find-file "~/sync/notes/temp.org")
 
 (set-face-attribute 'mode-line-inactive nil
 		        ;;:underline t
@@ -947,22 +947,21 @@
 
 ;;hide-mode-line-mode -1
 
-;; Function to disable "yes or no" confirmation when cancelling an org-capture note.
-  (defun my/return-t (orig-fun &rest args)
+(defun my/return-t (orig-fun &rest args)
     t)
-  (defun my/disable-yornp (orig-fun &rest args)
-    (advice-add 'yes-or-no-p :around #'my/return-t)
-    (advice-add 'y-or-n-p :around #'my/return-t)
-    (let ((res (apply orig-fun args)))
-      (advice-remove 'yes-or-no-p #'my/return-t)
-      (advice-remove 'y-or-n-p #'my/return-t)
-      res))
-  (advice-add 'org-roam-capture--finalize :around #'my/disable-yornp)
+(defun my/disable-yornp (orig-fun &rest args)
+  (advice-add 'yes-or-no-p :around #'my/return-t)
+  (advice-add 'y-or-n-p :around #'my/return-t)
+  (let ((res (apply orig-fun args)))
+    (advice-remove 'yes-or-no-p #'my/return-t)
+    (advice-remove 'y-or-n-p #'my/return-t)
+    res))
+(advice-add 'org-roam-capture--finalize :around #'my/disable-yornp)
 
 (setq find-file-visit-truename t)
 ;(setq vc-follow-symlinks t) ; What does this do?
 
-(find-file "~/sync/notes/temp.org")
+(use-package simple-httpd)
 
 ;; Make all backups be in the same directory.
 ;;(setq backup-directory-alist '(("." . "~/.saves")))
