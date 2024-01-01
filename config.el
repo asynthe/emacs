@@ -190,10 +190,10 @@
 (setq doom-themes-enable-italic t)      ; if nil, italics is disabled
 
 (set-face-attribute 'default nil
-	  :font "Iosevka Nerd Font 14"
+	  :font "JetBrainsMono Nerd Font 14"
 	  :weight 'regular)
 (set-face-attribute 'variable-pitch nil
-	  :font "Iosevka Nerd Font 14"
+	  :font "JetBrainsMono Nerd Font 14"
 	  :weight 'regular)
 
 ;; org-table and org-block are inherited from this face
@@ -211,7 +211,7 @@
 (add-hook 'org-mode-hook #'my-org-faces)
 
 ;; Needed if using emacs client. Otherwise, your fonts will be smaller than expected.
-(add-to-list 'default-frame-alist '(font . "Iosevka Nerd Font 14"))
+(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font 14"))
 
 (use-package ligature
   :config
@@ -540,10 +540,21 @@
 
 (with-eval-after-load 'evil-maps
   (define-key evil-motion-state-map (kbd "SPC") nil)
-  (define-key evil-motion-state-map (kbd "RET") nil)
-  (define-key evil-motion-state-map (kbd "TAB") nil))
+  (define-key evil-motion-state-map (kbd "RET") nil))
+  ;;(define-key evil-motion-state-map (kbd "TAB") nil))
 
-;; GLOBAL KEYBINDINGS
+;; Keybinding for Evil Mode
+(evil-define-key 'normal org-mode-map (kbd "<tab>") #'zin/org-cycle-current-headline)
+
+;; Here's the function.
+;;(defun zin/org-cycle-current-headline ()
+  ;;(interactive)
+  ;;(outline-previous-heading)
+  ;;(org-cycle))
+
+(defun zin/org-cycle-current-headline ()
+  (interactive)
+  (org-cycle-internal-local))
 
 ;; easy window swap
 (global-set-key (kbd "s-n") 'window-swap-states)
@@ -573,43 +584,6 @@
 ;; other
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-(nvmap :states '(normal) :keymaps 'override :prefix "SPC"
-
-       ;; T - toggle
-       "t c" '(centered-cursor-mode :which-key "Toggle centered cursor mode")
-       "t x" '(global-centered-cursor-mode :which-key "Toggle centered cursor mode on all buffers")
-       ;;"t s" '(scroll-lock-mode :which-key "Scroll lock mode") ;; Disabled for centered-cursor-mode
-       ;;"t t" '(toggle-window-transparency :which-key "Toggle transparency")
-       "t l" '(org-latex-preview :which-key "Toggle LaTeX fragment preview")
-       "t h" '(org-toggle-heading :which-key "Org toggle heading")
-       "t m" '(global-org-modern-mode :which-key "Activate org modern"))
-
-(global-set-key (kbd "s-{") 'persp-prev)
-(global-set-key (kbd "s-}") 'persp-next)
-
-(nvmap :states '(normal) :keymaps 'override :prefix "SPC"
-       "p k" '(persp-kill :which-key "Kill workspace")
-       "p r" '(persp-rename :which-key "Rename workspace")
-       "p a" '(persp-add-buffer :which-key "Move a buffer to current workspace, no switching")
-       "p m" '(persp-set-buffer :which-key "Move buffer to workspace and remove from all others"))
-
-(winner-mode 1)
-(nvmap :prefix "SPC"
-       ;; Window splits
-       "w c"   '(evil-window-delete :which-key "Close window")
-       "w n"   '(evil-window-new :which-key "New window")
-       "w s"   '(evil-window-split :which-key "Horizontal split window")
-       "w v"   '(evil-window-vsplit :which-key "Vertical split window")
-       ;; Window motions
-       "w h"   '(evil-window-left :which-key "Window left")
-       "w j"   '(evil-window-down :which-key "Window down")
-       "w k"   '(evil-window-up :which-key "Window up")
-       "w l"   '(evil-window-right :which-key "Window right")
-       "w w"   '(evil-window-next :which-key "Goto next window")
-       ;; winner mode
-       "w <left>"  '(winner-undo :which-key "Winner undo")
-       "w <right>" '(winner-redo :which-key "Winner redo"))
-
 (global-set-key (kbd "M-[") 'previous-buffer)
 (global-set-key (kbd "M-]") 'next-buffer)
 
@@ -628,100 +602,19 @@
       "b n" '(next-buffer :which-key "Next buffer")
       "b p" '(previous-buffer :which-key "Previous buffer"))
 
-(nvmap :states '(normal) :keymaps 'override :prefix "SPC"
-       "p i" '(pdf-view-midnight-minor-mode :which-key "Invert PDF colors"))
-
-(nvmap :states '(normal) :keymaps 'override :prefix "SPC"
-  
-       ;; NOT SETUP
-       ;;"n r d" dailies file
-       ;;"n r z" agenda cal-fw?
-       ;;"n r x" tasks file
- 
-       ;; Org capture
-       "n n" '(org-roam-capture :which-key "New note")
-       "n f" '(org-roam-node-find :which-key "Find note")
-       "n d s" '(org-roam-db-sync :which-key "Database sync")
-       "n i" '(org-roam-node-insert :which-key "Insert org-roam node link")
-       
-       ;; Org agenda
-       "o a" '(org-agenda :which-key "Open agenda")
-       "o s" '(org-time-stamp :which-key "Insert a time stamp")
-       "RET" '(org-toggle-checkbox :which-key "Tick checkbox")
-       
-       ;; Org dailies
-       "n d d" '(org-roam-dailies-goto-date :which-key "Dailies calendar")
-       ;;"n d d" '(org-roam-dailies-capture-today :which-key "Capture today") ;; I prefer using the calendar.
-       "n d n" '(org-roam-dailies-goto-tomorrow :which-key "Next day")
-       "n d p" '(org-roam-dailies-goto-yesterday :which-key "Previous day")
-
-       ;; Org journal
-       "n j" '(org-journal-new-entry :which-key "New entry")
-
-       "j n" '(org-journal-next-entry :which-key "Next entry")
-       "j p" '(org-journal-previous-entry :which-key "Previous entry")
-
-       ;; S - start
-       "s p" '(org-pomodoro :which-key "Start/end pomodoro timer")
-       
-
-       ;; A - Add
-       "a c" '(org-mouse-insert-checkbox :which-key "Insert checkbox")
-       
-       ;; I - Insert
-       "i l" '(org-insert-link :which-key "Insert link")
-       "i s" '(org-schedule :which-key "Insert SCHEDULE:")
-       "i p" '(org-set-property :which-key "Insert PROPERTY:")
-
-       ;; R - Roam
-       "r a" '(org-roam-alias-add :which-key "Add alias to node")
-       "r b" '(org-roam-buffer-toggle :which-key "Open roam buffer")
-       "r i" '(org-id-get-create :which-key "Create org id")
-       "r t" '(org-roam-tag-add :which-key "Add a tag to node")
- 
-       "r g" '(org-roam-ui-open :which-key "Open org-roam graph")
-       ;;"r g" '(org-roam-graph :which-key "Open org-roam graph") [NOT WORKING]
-
-       ;; D - display
-       "d l" '(org-toggle-link-display :which-key "Display links as plain text")
-       "d i" '(org-toggle-inline-images :which-key "Org toggle inline imager")
-       "d m" '(hide-mode-line-mode :which-key "Display/Hide modeline")
-       "d a" '(global-hide-mode-line-mode :which-key "Display/Hide all modelines"))
-
-       ;; NOT SET
-       ;;"d i"   '(org-toggle-item :which-key "Org toggle item")
-       ;;"d i" '(org-display-inline-images :which-key "Display images") ; How does this work?
-
-(nvmap :states '(normal) :keymaps 'override :prefix "SPC"
-
-    ;; Open - Apps
-    "o t"   '(term :which-key "Open terminal")
-    "e h"   '(counsel-esh-history :which-key "Eshell history")
-    "e s"   '(eshell :which-key "Eshell")
-  
-
-    ;; Log Buffer
-    "l o" '((lambda () (interactive) (clm/toggle-command-log-buffer) (global-command-log-mode)) :which-key "Start command log mode")
-    ;; Start log buffer
-    "l s" '(global-command-log-mode :which-key "Turn on command log mode")
-    "l b" '(clm/toggle-command-log-buffer :which-key "Open the command log buffer")
-    
-    ;; Modes
-    "m w" '(writeroom-mode :which-key "Writeroom mode"))
-
 (nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
-       "f f"   '(find-file :which-key "Find file")
-       "f r"   '(rename-current-buffer-file :which-key "Rename current buffer filename")
+       "f f" '(find-file :which-key "Find file")
+       "f r" '(rename-current-buffer-file :which-key "Rename current buffer filename")
        ;;"f r"   '(counsel-recentf :which-key "Recent files")
        ;; put recent files in SPC + /
-       "f s"   '(save-buffer :which-key "Save file")
-       "f u"   '(sudo-edit-find-file :which-key "Sudo find file")
-       "f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path")
-       "f C"   '(copy-file :which-key "Copy file")
-       "f D"   '(delete-file :which-key "Delete file")
-       "f R"   '(rename-file :which-key "Rename file")
-       "f S"   '(write-file :which-key "Save file as...")
-       "f U"   '(sudo-edit :which-key "Sudo edit file"))
+       "f s" '(save-buffer :which-key "Save file")
+       "f u" '(sudo-edit-find-file :which-key "Sudo find file")
+       "f y" '(dt/show-and-copy-buffer-path :which-key "Yank file path")
+       "f C" '(copy-file :which-key "Copy file")
+       "f D" '(delete-file :which-key "Delete file")
+       "f R" '(rename-file :which-key "Rename file")
+       "f S" '(write-file :which-key "Save file as...")
+       "f U" '(sudo-edit :which-key "Sudo edit file"))
 
 (nvmap :states '(normal) :keymaps 'override :prefix "SPC"
 
@@ -744,6 +637,112 @@
   "c v" '((lambda () (interactive (find-file "~/.config/nvim/README.org"))) :which-key "Neovim configuration")
   "c x" '((lambda () (interactive (find-file "~/.config/xmonad/README.org"))) :which-key "Xmonad configuration")
   "c z" '((lambda () (interactive (find-file "~/.config/zsh/README.org"))) :which-key "Zsh configuration"))
+
+(winner-mode 1)
+(nvmap :prefix "SPC"
+       ;; Window splits
+       "w c" '(evil-window-delete :which-key "Close window")
+       "w n" '(evil-window-new :which-key "New window")
+       "w s" '(evil-window-split :which-key "Horizontal split window")
+       "w v" '(evil-window-vsplit :which-key "Vertical split window")
+       ;; Window motions
+       "w h" '(evil-window-left :which-key "Window left")
+       "w j" '(evil-window-down :which-key "Window down")
+       "w k" '(evil-window-up :which-key "Window up")
+       "w l" '(evil-window-right :which-key "Window right")
+       "w w" '(evil-window-next :which-key "Goto next window")
+       ;; winner mode
+       "w <left>"  '(winner-undo :which-key "Winner undo")
+       "w <right>" '(winner-redo :which-key "Winner redo"))
+
+(global-set-key (kbd "s-{") 'persp-prev)
+(global-set-key (kbd "s-}") 'persp-next)
+
+(nvmap :states '(normal) :keymaps 'override :prefix "SPC"
+       "p k" '(persp-kill :which-key "Kill workspace")
+       "p r" '(persp-rename :which-key "Rename workspace")
+       "p a" '(persp-add-buffer :which-key "Move a buffer to current workspace, no switching")
+       "p m" '(persp-set-buffer :which-key "Move buffer to workspace and remove from all others"))
+
+(nvmap :states '(normal) :keymaps 'override :prefix "SPC"
+
+    ;; Open - Apps
+    "o t" '(term :which-key "Open terminal")
+    "e h" '(counsel-esh-history :which-key "Eshell history")
+    "e s" '(eshell :which-key "Eshell")
+    "m w" '(writeroom-mode :which-key "Writeroom mode"))
+    "a c" '(org-mouse-insert-checkbox :which-key "Insert checkbox")
+
+    ;; Log Buffer
+    "l o" '((lambda () (interactive) (clm/toggle-command-log-buffer) (global-command-log-mode)) :which-key "Start command log mode")
+    ;; Start log buffer
+    "l s" '(global-command-log-mode :which-key "Turn on command log mode")
+    "l b" '(clm/toggle-command-log-buffer :which-key "Open the command log buffer")
+
+(nvmap :states '(normal) :keymaps 'override :prefix "SPC"
+
+       ;; Org agenda
+       "o a" '(org-agenda :which-key "Open agenda")
+       "o s" '(org-time-stamp :which-key "Insert a time stamp")
+       "RET" '(org-toggle-checkbox :which-key "Tick checkbox")
+       
+       ;; Org dailies
+       ;;"n d d" '(org-roam-dailies-goto-date :which-key "Dailies calendar")
+       ;;"n d d" '(org-roam-dailies-capture-today :which-key "Capture today") ;; I prefer using the calendar.
+       ;;"n d n" '(org-roam-dailies-goto-tomorrow :which-key "Next day")
+       ;;"n d p" '(org-roam-dailies-goto-yesterday :which-key "Previous day")
+
+       ;; Org journal
+       "n j" '(org-journal-new-entry :which-key "New entry")
+
+       "j n" '(org-journal-next-entry :which-key "Next entry")
+       "j p" '(org-journal-previous-entry :which-key "Previous entry")
+
+       ;; S - start
+       "s p" '(org-pomodoro :which-key "Start/end pomodoro timer")
+
+       ;; I - Insert
+       "i l" '(org-insert-link :which-key "Insert link")
+       "i s" '(org-schedule :which-key "Insert SCHEDULE:")
+       "i p" '(org-set-property :which-key "Insert PROPERTY:")
+
+       ;; R - Roam
+       "r a" '(org-roam-alias-add :which-key "Add alias to node")
+       "r b" '(org-roam-buffer-toggle :which-key "Open roam buffer")
+       "r i" '(org-id-get-create :which-key "Create org id")
+       "r t" '(org-roam-tag-add :which-key "Add a tag to node")
+       ;; R g - Roam Graph
+       "r g" '(org-roam-ui-open :which-key "Open org-roam graph")
+       ;;"r g" '(org-roam-graph :which-key "Open org-roam graph") [NOT WORKING]
+
+       ;; D - Display
+       "d L" '(org-toggle-link-display :which-key "Display links as plain text")
+       "d i" '(org-toggle-inline-images :which-key "Org toggle inline imager")
+       "d m" '(hide-mode-line-mode :which-key "Display/Hide modeline")
+       "d a" '(global-hide-mode-line-mode :which-key "Display/Hide all modelines")
+       ;;"d a" '(global-org-modern-mode :which-key "Activate org modern")
+
+       ;; Notes - Org capture
+       "n n" '(org-roam-capture :which-key "New note")
+       "n f" '(org-roam-node-find :which-key "Find note")
+       "n d s" '(org-roam-db-sync :which-key "Database sync")
+       "n i" '(org-roam-node-insert :which-key "Insert org-roam node link")
+
+       ;; Toggle - Narrow
+       "t e" '(widen :which-key "Widen / Escape narrowed area.")
+       "t t" '(org-narrow-to-subtree :which-key "Narrow to subtree.")
+       "t b" '(org-narrow-to-block :which-key "Narrow to source block / block of text.")
+       "t l" '(org-narrow-to-element :which-key "Narrow to line."))
+
+(nvmap :states '(normal) :keymaps 'override :prefix "SPC"
+       "p i" '(pdf-view-midnight-minor-mode :which-key "Invert PDF colors"))
+
+;;(nvmap :states '(normal) :keymaps 'override :prefix "SPC"
+       ;; T - toggle
+       ;;"t c" '(centered-cursor-mode :which-key "Toggle centered cursor mode")
+       ;;"t C" '(global-centered-cursor-mode :which-key "Toggle centered cursor mode on all buffers"))
+       ;;"t s" '(scroll-lock-mode :which-key "Scroll lock mode") ;; Disabled for centered-cursor-mode
+       ;;"t t" '(toggle-window-transparency :which-key "Toggle transparency")
 
 (use-package perspective
   :bind
@@ -937,6 +936,8 @@
 
 (use-package pass)
 
+(use-package simple-httpd)
+
 (find-file "~/sync/notes/temp.org")
 
 (set-face-attribute 'mode-line-inactive nil
@@ -961,7 +962,26 @@
 (setq find-file-visit-truename t)
 ;(setq vc-follow-symlinks t) ; What does this do?
 
-(use-package simple-httpd)
+;(use-package ellama)
+  ;:init
+  ;(setopt ellama-language "German")
+  ;(require 'llm-ollama)
+  ;(setopt ellama-provider
+		  ;(make-llm-ollama
+		   ;:chat-model "zephyr:7b-beta-q6_K" :embedding-model "zephyr:7b-beta-q6_K"))
+  ;; Predefined llm providers for interactive switching.
+  ;; You shouldn't add ollama providers here - it can be selected interactively
+  ;; without it. It is just example.
+  ;(setopt ellama-providers
+		  ;'(("zephyr" . (make-llm-ollama
+						 ;:chat-model "zephyr:7b-beta-q6_K"
+						 ;:embedding-model "zephyr:7b-beta-q6_K"))
+			;("mistral" . (make-llm-ollama
+						  ;:chat-model "mistral:7b-instruct-v0.2-q6_K"
+						  ;:embedding-model "mistral:7b-instruct-v0.2-q6_K"))
+			;("mixtral" . (make-llm-ollama
+						  ;:chat-model "mixtral:8x7b-instruct-v0.1-q3_K_M-4k"
+						  ;:embedding-model "mixtral:8x7b-instruct-v0.1-q3_K_M-4k")))))
 
 ;; Make all backups be in the same directory.
 ;;(setq backup-directory-alist '(("." . "~/.saves")))
