@@ -289,7 +289,7 @@
       )
 
 ;; Directory and others
-(setq org-directory "~/sync"
+(setq org-directory "~/sync/notes"
       org-id-track-globally t
       org-log-done 'time
       org-startup-folded t
@@ -425,11 +425,13 @@
 (use-package org-roam
   :init
   (setq org-roam-v2-ack t)
-  :config
+
+  ;;:config
   (org-roam-db-autosync-mode)
   (require 'org-roam-protocol) ;; If using org-roam-protocol
+
   :custom
-  (org-roam-directory "~/sync")
+  (org-roam-directory "~/sync/notes")
   ;;(org-roam-dailies-directory  "personal/daily") ;; From org-roam-directory
   (org-roam-completion-everywhere t)
   (org-roam-capture-templates
@@ -937,6 +939,9 @@
 (use-package pass)
 
 (use-package simple-httpd)
+
+(setq browse-url-browser-function 'browse-url-generic
+          browse-url-generic-program "librewolf")
 
 (find-file "~/sync/notes/temp.org")
 
