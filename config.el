@@ -394,14 +394,16 @@
 			        ("cpp" (:background "#121212" :extend t))
 				("emacs-lisp" (:background "#121212" :extend t))
 			        ("haskell" (:background "#121212" :extend t))
+			        ("json" (:background "#121212" :extend t))
 				("latex" (:background "#121212" :extend t))
                           ("lua" (:background "#121212" :extend t))
+                          ("nix" (:background "#121212" :extend t))
 			        ("org" (:background "#121212" :extend t))
                           ("python" (:background "#121212" :extend t))
 				("pwsh" (:background "#012456" :extend t))
 				("text" (:background "#121212" :extend t))
-                          ("nix" (:background "#121212" :extend t))
-			        ("shell" (:background "#121212" :extend t))))
+			        ("shell" (:background "#121212" :extend t))
+				("yaml" (:background "#121212" :extend t))))
 
              ;;(custom-set-faces
              ;; '(org-block-begin-line
