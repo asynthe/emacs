@@ -1747,7 +1747,7 @@ This will enable us to create a local web server, accesible with *http://localho
 
 ** Open a file instead of /Scratch/ buffer
 
-+ [[https://superuser.com/questions/400457/how-to-automatically-open-a-file-when-emacs-start][How to automatically open a file when Emacs start? - StackExchange]]
+> [[https://superuser.com/questions/400457/how-to-automatically-open-a-file-when-emacs-start][How to automatically open a file when Emacs start? - StackExchange]]
 
 #+begin_src emacs-lisp
 (find-file "~/sync/notes/temp.org")
