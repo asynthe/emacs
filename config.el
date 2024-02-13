@@ -152,8 +152,8 @@
 		eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-(set-frame-parameter nil 'alpha-background 0.75) ; For current frame
-(add-to-list 'default-frame-alist '(alpha-background .75)) ; For all new frames henceforth
+(set-frame-parameter nil 'alpha-background 0.80) ; For current frame
+(add-to-list 'default-frame-alist '(alpha-background .80)) ; For all new frames henceforth
 
 ;;(defun toggle-window-transparency ()
   ;;"Toggle transparency."
@@ -190,15 +190,15 @@
 (setq doom-themes-enable-italic t)      ; if nil, italics is disabled
 
 (set-face-attribute 'default nil
-	  :font "JetBrainsMono Nerd Font 10"
+	  :font "JetBrainsMono Nerd Font 12"
 	  :weight 'regular)
 (set-face-attribute 'variable-pitch nil
-	  :font "JetBrainsMono Nerd Font 10"
+	  :font "JetBrainsMono Nerd Font 12"
 	  :weight 'regular)
 
 ;; org-table and org-block are inherited from this face
 (set-face-attribute 'fixed-pitch nil
-	  :font "JetBrainsMono Nerd Font 10"
+	  :font "JetBrainsMono Nerd Font 12"
 	  :weight 'regular)
 
 ;; Org Faces
@@ -211,7 +211,7 @@
 (add-hook 'org-mode-hook #'my-org-faces)
 
 ;; Needed if using emacs client. Otherwise, your fonts will be smaller than expected.
-(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font 10"))
+(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font 12"))
 
 (use-package ligature
   :config

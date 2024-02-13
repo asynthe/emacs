@@ -333,8 +333,8 @@ Disable line numbering in /Org/ or /Markdown/.
 _note_: Works on X windows with a compositor like [[id:a2042b5e-f0a2-4213-a8c8-2fd9cd9636d8][picom]], but in Wayland case, you will need pure GTK emacs.
 
 #+begin_src emacs-lisp
-(set-frame-parameter nil 'alpha-background 0.75) ; For current frame
-(add-to-list 'default-frame-alist '(alpha-background .75)) ; For all new frames henceforth
+(set-frame-parameter nil 'alpha-background 0.80) ; For current frame
+(add-to-list 'default-frame-alist '(alpha-background .80)) ; For all new frames henceforth
 
 ;;(defun toggle-window-transparency ()
   ;;"Toggle transparency."
@@ -405,15 +405,15 @@ iosevka
 
 #+begin_src emacs-lisp
 (set-face-attribute 'default nil
-	  :font "JetBrainsMono Nerd Font 10"
+	  :font "JetBrainsMono Nerd Font 12"
 	  :weight 'regular)
 (set-face-attribute 'variable-pitch nil
-	  :font "JetBrainsMono Nerd Font 10"
+	  :font "JetBrainsMono Nerd Font 12"
 	  :weight 'regular)
 
 ;; org-table and org-block are inherited from this face
 (set-face-attribute 'fixed-pitch nil
-	  :font "JetBrainsMono Nerd Font 10"
+	  :font "JetBrainsMono Nerd Font 12"
 	  :weight 'regular)
 
 ;; Org Faces
@@ -426,7 +426,7 @@ iosevka
 (add-hook 'org-mode-hook #'my-org-faces)
 
 ;; Needed if using emacs client. Otherwise, your fonts will be smaller than expected.
-(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font 10"))
+(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font 12"))
 #+end_src
 
 ** Font Ligatures
