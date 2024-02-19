@@ -633,13 +633,15 @@
   "h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :which-key "Reload emacs config")
 
   ;; Configuration files 
-  "c d" '((lambda () (interactive (find-file "~/sync/system/README.org"))) :which-key "Dots configuration")
   "c f" '((lambda () (interactive (find-file "~/flake/flake.org"))) :which-key "Nix flake configuration")
-  "c h" '((lambda () (interactive (find-file "~/.config/hypr/README.org"))) :which-key "Hyprland configuration")
   "c t" '((lambda () (interactive (find-file "~/.config/tmux/README.org"))) :which-key "tmux configuration")
   "c l" '((lambda () (interactive (find-file "~/.config/lf/README.org"))) :which-key "lf configuration")
   "c v" '((lambda () (interactive (find-file "~/.config/nvim/README.org"))) :which-key "Neovim configuration")
+
+  "c h" '((lambda () (interactive (find-file "~/.config/hypr/README.org"))) :which-key "Hyprland configuration")
   "c x" '((lambda () (interactive (find-file "~/.config/xmonad/README.org"))) :which-key "Xmonad configuration")
+
+  "c b" '((lambda () (interactive (find-file "~/.config/bash/README.org"))) :which-key "Bash configuration")
   "c z" '((lambda () (interactive (find-file "~/.config/zsh/README.org"))) :which-key "Zsh configuration"))
 
 (winner-mode 1)
