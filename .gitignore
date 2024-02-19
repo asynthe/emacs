@@ -1,4 +1,5 @@
 auto-save-list
+eln-cache
 elpa
 emojis
 ltximg
@@ -7,3 +8,4 @@ init.el
 org-roam.db
 persp-save
 projectile-bookmarks.eld
+recentf
