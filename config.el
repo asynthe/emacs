@@ -81,6 +81,9 @@
 (use-package nix-mode
   :mode "\\.nix\\'")
 
+(setq focus-follows-mouse t)
+(setq mouse-autoselect-window t)
+
 (setq inhibit-startup-message t)
 
 (scroll-bar-mode -1)     ; Disable visible scrollbar
@@ -152,8 +155,11 @@
 		eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-(set-frame-parameter nil 'alpha-background 0.80) ; For current frame
-(add-to-list 'default-frame-alist '(alpha-background .80)) ; For all new frames henceforth
+(set-frame-parameter nil 'alpha-background 100) ; For current frame
+(add-to-list 'default-frame-alist '(alpha-background .100)) ; For all new frames henceforth
+
+;;(set-frame-parameter nil 'alpha-background 0.7) ; For current frame
+;;(add-to-list 'default-frame-alist '(alpha-background .70)) ; For all new frames henceforth
 
 ;;(defun toggle-window-transparency ()
   ;;"Toggle transparency."
@@ -392,8 +398,9 @@
 (setq org-src-block-faces '(("bash" (:background "#121212" :extend t))
                           ("c" (:background "#121212" :extend t))
 			        ("cpp" (:background "#121212" :extend t))
-				("emacs-lisp" (:background "#121212" :extend t))
+			        ("dockerfile" (:background "#121212" :extend t))
 			        ("haskell" (:background "#121212" :extend t))
+				("emacs-lisp" (:background "#121212" :extend t))
 			        ("json" (:background "#121212" :extend t))
 				("latex" (:background "#121212" :extend t))
                           ("lua" (:background "#121212" :extend t))
@@ -403,7 +410,8 @@
 				("pwsh" (:background "#012456" :extend t))
 				("text" (:background "#121212" :extend t))
 			        ("shell" (:background "#121212" :extend t))
-				("yaml" (:background "#121212" :extend t))))
+				("yaml" (:background "#121212" :extend t))
+				("xml" (:background "#6D86FF" :extend t))))
 
              ;;(custom-set-faces
              ;; '(org-block-begin-line
@@ -947,7 +955,7 @@
 (setq browse-url-browser-function 'browse-url-generic
           browse-url-generic-program "librewolf")
 
-(find-file "~/sync/notes/temp.org")
+(find-file "~/sync/notes/main.org")
 
 (set-face-attribute 'mode-line-inactive nil
 		        ;;:underline t
@@ -970,27 +978,6 @@
 
 (setq find-file-visit-truename t)
 ;(setq vc-follow-symlinks t) ; What does this do?
-
-;(use-package ellama)
-  ;:init
-  ;(setopt ellama-language "German")
-  ;(require 'llm-ollama)
-  ;(setopt ellama-provider
-		  ;(make-llm-ollama
-		   ;:chat-model "zephyr:7b-beta-q6_K" :embedding-model "zephyr:7b-beta-q6_K"))
-  ;; Predefined llm providers for interactive switching.
-  ;; You shouldn't add ollama providers here - it can be selected interactively
-  ;; without it. It is just example.
-  ;(setopt ellama-providers
-		  ;'(("zephyr" . (make-llm-ollama
-						 ;:chat-model "zephyr:7b-beta-q6_K"
-						 ;:embedding-model "zephyr:7b-beta-q6_K"))
-			;("mistral" . (make-llm-ollama
-						  ;:chat-model "mistral:7b-instruct-v0.2-q6_K"
-						  ;:embedding-model "mistral:7b-instruct-v0.2-q6_K"))
-			;("mixtral" . (make-llm-ollama
-						  ;:chat-model "mixtral:8x7b-instruct-v0.1-q3_K_M-4k"
-						  ;:embedding-model "mixtral:8x7b-instruct-v0.1-q3_K_M-4k")))))
 
 ;; Make all backups be in the same directory.
 ;;(setq backup-directory-alist '(("." . "~/.saves")))
@@ -1025,6 +1012,10 @@
 ;;(require 'eaf-browser)
 ;;(require 'eaf-pdf-viewer)
 
+;;(good-scroll-mode 1)
+;;(global-set-key [next] #'good-scroll-up)
+;;(global-set-key [prior] #'good-scroll-down)
+
 (use-package org-gtd
   :after org
   :init
@@ -1038,8 +1029,25 @@
 (setq org-agenda-files '("~/sync/notes/1_personal/gtd/next.org"
                              "~/sync/notes/1_personal/gtd/projects.org"))
 
-(use-package websocket)
+;(use-package ellama)
+  ;:init
+  ;(setopt ellama-language "German")
+  ;(require 'llm-ollama)
+  ;(setopt ellama-provider
+		  ;(make-llm-ollama
+		   ;:chat-model "zephyr:7b-beta-q6_K" :embedding-model "zephyr:7b-beta-q6_K"))
+  ;; Predefined llm providers for interactive switching.
+  ;; You shouldn't add ollama providers here - it can be selected interactively
+  ;; without it. It is just example.
+  ;(setopt ellama-providers
+		  ;'(("zephyr" . (make-llm-ollama
+						 ;:chat-model "zephyr:7b-beta-q6_K"
+						 ;:embedding-model "zephyr:7b-beta-q6_K"))
+			;("mistral" . (make-llm-ollama
+						  ;:chat-model "mistral:7b-instruct-v0.2-q6_K"
+						  ;:embedding-model "mistral:7b-instruct-v0.2-q6_K"))
+			;("mixtral" . (make-llm-ollama
+						  ;:chat-model "mixtral:8x7b-instruct-v0.1-q3_K_M-4k"
+						  ;:embedding-model "mixtral:8x7b-instruct-v0.1-q3_K_M-4k")))))
 
-;;(good-scroll-mode 1)
-;;(global-set-key [next] #'good-scroll-up)
-;;(global-set-key [prior] #'good-scroll-down)
+(use-package websocket)

@@ -36,29 +36,24 @@ Welcome to my custom Emacs configuration!
 - [[#packages-1][Packages]]
   - [[#system-1][System]]
   - [[#ui-1][UI]]
-- [[#extra---packages][Extra - Packages]]
-  - [[#blog---simple-httpd][Blog - simple-httpd]]
+  - [[#extra][Extra]]
 - [[#extra---configuration][Extra - Configuration]]
   - [[#change-default-browser-for-urls][Change default browser for URLs]]
   - [[#open-a-file-instead-of-scratch-buffer][Open a file instead of /Scratch/ buffer]]
   - [[#ui---render-modeline-just-in-active-window][UI - Render Modeline just in active window]]
   - [[#disable-yesno-when-cancelling-note-on-org-capture][Disable Yes/No when Cancelling Note on Org Capture]]
   - [[#disable-follow-git-controlled-symbolic-link][Disable follow Git-controlled symbolic link]]
-- [[#disabled][Disabled]]
-  - [[#pdf-tools][pdf-tools]]
-  - [[#llm-ellama][LLM (ellama)]]
 - [[#delete--add-in-future][Delete / Add in Future]]
-  - [[#vertico][Vertico]]
-  - [[#marginalia][Marginalia]]
-  - [[#keycast][Keycast]]
   - [[#backups][Backups]]
   - [[#eaf-emacs-application-framework][EAF (Emacs Application Framework)]]
-  - [[#org-gtd][ORG GTD]]
-  - [[#websocket-exists][websocket [EXISTS?]]]
   - [[#ement][Ement]]
   - [[#good-scroll][Good Scroll]]
-- [[#working-but-removed][Working but Removed]]
-  - [[#aggresive-indent-mode][Aggresive Indent Mode]]
+  - [[#keycast][Keycast]]
+  - [[#marginalia][Marginalia]]
+  - [[#org-gtd][ORG GTD]]
+  - [[#removed][Removed]]
+  - [[#vertico][Vertico]]
+  - [[#websocket-exists][websocket [EXISTS?]]]
 
 * Info
 
@@ -236,6 +231,15 @@ It's vim, on emacs!
   :mode "\\.nix\\'")
 #+end_src
 
+*** Mouse Focus
+
+> [[https://stackoverflow.com/questions/1139124/emacs-mouse-focus-stuck-in-one-frame#1144476][Emacs mouse focus stuck in one frame - StackOverflow]]
+
+#+begin_src emacs-lisp
+(setq focus-follows-mouse t)
+(setq mouse-autoselect-window t)
+#+end_src
+
 ** UI
 *** Minimalist Menu
 
@@ -329,12 +333,15 @@ Disable line numbering in /Org/ or /Markdown/.
 
 *** Transparency
 
-- [[https://kristofferbalintona.me/posts/202206071000/][True Emacs Transparency - Kristoffer Balintona]]
+> [[https://kristofferbalintona.me/posts/202206071000/][True Emacs Transparency - Kristoffer Balintona]]
 _note_: Works on X windows with a compositor like [[id:a2042b5e-f0a2-4213-a8c8-2fd9cd9636d8][picom]], but in Wayland case, you will need pure GTK emacs.
 
 #+begin_src emacs-lisp
-(set-frame-parameter nil 'alpha-background 0.80) ; For current frame
-(add-to-list 'default-frame-alist '(alpha-background .80)) ; For all new frames henceforth
+(set-frame-parameter nil 'alpha-background 100) ; For current frame
+(add-to-list 'default-frame-alist '(alpha-background .100)) ; For all new frames henceforth
+
+;;(set-frame-parameter nil 'alpha-background 0.7) ; For current frame
+;;(add-to-list 'default-frame-alist '(alpha-background .70)) ; For all new frames henceforth
 
 ;;(defun toggle-window-transparency ()
   ;;"Toggle transparency."
@@ -686,7 +693,7 @@ _note_: disable evil mode *(M-x turn-off-evil-mode RET*) if the menu doesn't app
 
 ** Code Blocks
 
-- [[https://orgmode.org/worg/org-contrib/babel/languages/index.html][List of supported languages]]
+> [[https://orgmode.org/worg/org-contrib/babel/languages/index.html][List of supported languages]]
   
 Some of them: *awk, c, c++, emacs-lisp, elisp (preferred emacs-lisp for this config), haskell, java, python, latex, lisp, lua, shell, R, ruby, sass, scheme, sqlite...*
 
@@ -702,8 +709,9 @@ Some of them: *awk, c, c++, emacs-lisp, elisp (preferred emacs-lisp for this con
 (setq org-src-block-faces '(("bash" (:background "#121212" :extend t))
                           ("c" (:background "#121212" :extend t))
 			        ("cpp" (:background "#121212" :extend t))
-				("emacs-lisp" (:background "#121212" :extend t))
+			        ("dockerfile" (:background "#121212" :extend t))
 			        ("haskell" (:background "#121212" :extend t))
+				("emacs-lisp" (:background "#121212" :extend t))
 			        ("json" (:background "#121212" :extend t))
 				("latex" (:background "#121212" :extend t))
                           ("lua" (:background "#121212" :extend t))
@@ -713,7 +721,8 @@ Some of them: *awk, c, c++, emacs-lisp, elisp (preferred emacs-lisp for this con
 				("pwsh" (:background "#012456" :extend t))
 				("text" (:background "#121212" :extend t))
 			        ("shell" (:background "#121212" :extend t))
-				("yaml" (:background "#121212" :extend t))))
+				("yaml" (:background "#121212" :extend t))
+				("xml" (:background "#6D86FF" :extend t))))
 
              ;;(custom-set-faces
              ;; '(org-block-begin-line
@@ -1631,8 +1640,8 @@ A better help buffer.
 
 *** Doom Modeline
 
-+ [[https://github.com/seagle0128/doom-modeline][github page - doom-modeline]]
-+ [[https://github.com/hlissner/emacs-hide-mode-line][github page - hide-mode-line]]
+> [[https://github.com/seagle0128/doom-modeline][github page - doom-modeline]]
+> [[https://github.com/hlissner/emacs-hide-mode-line][github page - hide-mode-line]]
  
 The bar where you see on the bottom of the window.
 
@@ -1730,8 +1739,8 @@ _note_: Emacs implementation of [[id:4f81a52e-4000-4b93-9abc-e30d7920759c][pass]
 (use-package pass)
 #+end_src
 
-* Extra - Packages
-** Blog - simple-httpd
+** Extra
+*** simple-httpd
 
 This will enable us to create a local web server, accesible with *http://localhost:8080*, we can also access the other files on the *content/* folder like this: *http://localhost:8080/<filename>.html*
 
@@ -1752,7 +1761,7 @@ This will enable us to create a local web server, accesible with *http://localho
 > [[https://superuser.com/questions/400457/how-to-automatically-open-a-file-when-emacs-start][How to automatically open a file when Emacs start? - StackExchange]]
 
 #+begin_src emacs-lisp
-(find-file "~/sync/notes/temp.org")
+(find-file "~/sync/notes/main.org")
 #+end_src
 
 ** UI - Render Modeline just in active window
@@ -1788,7 +1797,7 @@ Function to disable "yes or no" confirmation when cancelling an org-capture note
 
 ** Disable follow Git-controlled symbolic link
 
-+ [[https://emacs.stackexchange.com/questions/3673/how-to-make-vc-and-magit-treat-a-symbolic-link-to-a-real-file-in-git-repo-just?rq=1][How to make vc-* and magit treat a symbolic link to a real file in git repo just like the original file? - StackExchange]]
+> [[https://emacs.stackexchange.com/questions/3673/how-to-make-vc-and-magit-treat-a-symbolic-link-to-a-real-file-in-git-repo-just?rq=1][How to make vc-* and magit treat a symbolic link to a real file in git repo just like the original file? - StackExchange]]
 
 When opening a file that is a symbolic link, don't ask whether I want to follow the link. Just do it.
 
@@ -1797,67 +1806,7 @@ When opening a file that is a symbolic link, don't ask whether I want to follow 
 ;(setq vc-follow-symlinks t) ; What does this do?
 #+end_src
 
-* Disabled
-** pdf-tools
-
-+ [[https://github.com/vedang/pdf-tools][github page]]
-+ [[https://pdftools.wiki][pdftools wiki]]
-+ [[https://github.com/noctuid/evil-guide#example-integration-with-pdf-tools][Evil guide, Example: Integration with Pdf Tools - github page]]
-
-Emacs support library for PDF files.
-After the install, run ~M-x pdf-tools-install RET~
-
-;;#+begin_src emacs-lisp
-(use-package pdf-tools
-  ;;:pin manual
-  :config
-  (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-width))
-  ;;(define-key pdf-view-mode-map (kbd "C-s") ;;'isearch-forward)
-  ;;:custom
-  ;;(pdf-annot-activate-created-annotations t ;;"automatically annotate highlights"))
-
-;; Start in midnight-mode, inverted colors
-(add-hook 'pdf-tools-enabled-hook 'pdf-view-midnight-minor-mode)
-
-;; Hide cursor, so file doesn't blink
-(add-hook 'pdf-view-mode-hook
-          (lambda ()
-        (set (make-local-variable 'evil-normal-state-cursor) (list nil))
-        (internal-show-cursor nil nil)))
-;;#+end_src
-
-** LLM (ellama)
-
-- [[https://github.com/s-kostyaev/ellama][github page]]
-
-#+begin_src emacs-lisp
-;(use-package ellama)
-  ;:init
-  ;(setopt ellama-language "German")
-  ;(require 'llm-ollama)
-  ;(setopt ellama-provider
-		  ;(make-llm-ollama
-		   ;:chat-model "zephyr:7b-beta-q6_K" :embedding-model "zephyr:7b-beta-q6_K"))
-  ;; Predefined llm providers for interactive switching.
-  ;; You shouldn't add ollama providers here - it can be selected interactively
-  ;; without it. It is just example.
-  ;(setopt ellama-providers
-		  ;'(("zephyr" . (make-llm-ollama
-						 ;:chat-model "zephyr:7b-beta-q6_K"
-						 ;:embedding-model "zephyr:7b-beta-q6_K"))
-			;("mistral" . (make-llm-ollama
-						  ;:chat-model "mistral:7b-instruct-v0.2-q6_K"
-						  ;:embedding-model "mistral:7b-instruct-v0.2-q6_K"))
-			;("mixtral" . (make-llm-ollama
-						  ;:chat-model "mixtral:8x7b-instruct-v0.1-q3_K_M-4k"
-						  ;:embedding-model "mixtral:8x7b-instruct-v0.1-q3_K_M-4k")))))
-#+end_src
-
 * Delete / Add in Future
-** Vertico
-** Marginalia
-** Keycast
 ** Backups
 
 #+begin_src emacs-lisp
@@ -1899,6 +1848,24 @@ After the install, run ~M-x pdf-tools-install RET~
 ;;(require 'eaf-pdf-viewer)
 #+end_src
 
+** Ement
+
+- [[https://github.com/alphapapa/ement.el][github page]]
+- [[https://github.com/matrix-org/pantalaimon/][pantalaimon github page]]
+** Good Scroll
+
+NOT SET UP FOR NOW
+
+[[https://github.com/emacsmirror/good-scroll][github page]]
+
+#+begin_src emacs-lisp
+;;(good-scroll-mode 1)
+;;(global-set-key [next] #'good-scroll-up)
+;;(global-set-key [prior] #'good-scroll-down)
+#+end_src
+
+** Keycast
+** Marginalia
 ** ORG GTD
 
 [[https://www.youtube.com/watch?v=YNqFZ4VBppA][Introducing Org GTD v3 - Loki Consulting (youtube video)]]
@@ -1919,30 +1886,8 @@ After the install, run ~M-x pdf-tools-install RET~
                                      "~/sync/notes/1_personal/gtd/projects.org"))
 #+end_src
 
-** websocket [EXISTS?]
-
-#+begin_src emacs-lisp
-(use-package websocket)
-#+end_src
-
-** Ement
-
-- [[https://github.com/alphapapa/ement.el][github page]]
-- [[https://github.com/matrix-org/pantalaimon/][pantalaimon github page]]
-** Good Scroll
-
-NOT SET UP FOR NOW
-
-[[https://github.com/emacsmirror/good-scroll][github page]]
-
-#+begin_src emacs-lisp
-;;(good-scroll-mode 1)
-;;(global-set-key [next] #'good-scroll-up)
-;;(global-set-key [prior] #'good-scroll-down)
-#+end_src
-
-* Working but Removed
-** Aggresive Indent Mode
+** Removed
+*** Aggresive Indent Mode
 
 Keep your code *always* indented.
 
@@ -1952,4 +1897,67 @@ Keep your code *always* indented.
   (global-aggressive-indent-mode 1)
   (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
 ;;#+end_src
+
+*** pdf-tools
+
++ [[https://github.com/vedang/pdf-tools][github page]]
++ [[https://pdftools.wiki][pdftools wiki]]
++ [[https://github.com/noctuid/evil-guide#example-integration-with-pdf-tools][Evil guide, Example: Integration with Pdf Tools - github page]]
+
+Emacs support library for PDF files.
+After the install, run ~M-x pdf-tools-install RET~
+
+;;#+begin_src emacs-lisp
+(use-package pdf-tools
+  ;;:pin manual
+  :config
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-width))
+  ;;(define-key pdf-view-mode-map (kbd "C-s") ;;'isearch-forward)
+  ;;:custom
+  ;;(pdf-annot-activate-created-annotations t ;;"automatically annotate highlights"))
+
+;; Start in midnight-mode, inverted colors
+(add-hook 'pdf-tools-enabled-hook 'pdf-view-midnight-minor-mode)
+
+;; Hide cursor, so file doesn't blink
+(add-hook 'pdf-view-mode-hook
+          (lambda ()
+        (set (make-local-variable 'evil-normal-state-cursor) (list nil))
+        (internal-show-cursor nil nil)))
+;;#+end_src
+
+*** LLM (ellama)
+
+- [[https://github.com/s-kostyaev/ellama][github page]]
+
+#+begin_src emacs-lisp
+;(use-package ellama)
+  ;:init
+  ;(setopt ellama-language "German")
+  ;(require 'llm-ollama)
+  ;(setopt ellama-provider
+		  ;(make-llm-ollama
+		   ;:chat-model "zephyr:7b-beta-q6_K" :embedding-model "zephyr:7b-beta-q6_K"))
+  ;; Predefined llm providers for interactive switching.
+  ;; You shouldn't add ollama providers here - it can be selected interactively
+  ;; without it. It is just example.
+  ;(setopt ellama-providers
+		  ;'(("zephyr" . (make-llm-ollama
+						 ;:chat-model "zephyr:7b-beta-q6_K"
+						 ;:embedding-model "zephyr:7b-beta-q6_K"))
+			;("mistral" . (make-llm-ollama
+						  ;:chat-model "mistral:7b-instruct-v0.2-q6_K"
+						  ;:embedding-model "mistral:7b-instruct-v0.2-q6_K"))
+			;("mixtral" . (make-llm-ollama
+						  ;:chat-model "mixtral:8x7b-instruct-v0.1-q3_K_M-4k"
+						  ;:embedding-model "mixtral:8x7b-instruct-v0.1-q3_K_M-4k")))))
+#+end_src
+
+** Vertico
+** websocket [EXISTS?]
+
+#+begin_src emacs-lisp
+(use-package websocket)
+#+end_src
 
